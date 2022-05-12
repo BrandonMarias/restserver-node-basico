@@ -1,16 +1,3 @@
-/*
-
-name,       s
-email,      s
-password,   s
-img,    s
-role,   s
-estado,  boolean
-google,  boolean
-
-
-*/
-
 const { Schema, model } = require("mongoose");
 
 const usuarioSchema = Schema({
@@ -41,4 +28,9 @@ const usuarioSchema = Schema({
   },
 });
 
-module.exports = model('Users', usuarioSchema)
+usuarioSchema.methods.toJSON = function () {
+  const { __v, password, ...user } = this.toObject();
+  return user;
+};
+
+module.exports = model("Users", usuarioSchema);

@@ -1,6 +1,5 @@
-const bcryptjs = require('bcryptjs')
+const bcryptjs = require("bcryptjs");
 const User = require("../models/user");
-const {validationResult} = require('express-validator')
 
 const getUsers = (req, res) => {
   const { s, nombre, pag = "1", limit = "10" } = req.query;
@@ -15,52 +14,41 @@ const getUsers = (req, res) => {
   });
 };
 
-const putUsers = (req, res) => {
+const putUsers = async (req, res) => {
   const { id } = req.params;
+  const { password, google, email, ...rest } = req.body;
+
+  if (password) {
+    const slat = bcryptjs.genSaltSync();
+    rest.password = bcryptjs.hashSync(password, slat);
+  }
+
+  const userUpdated = await User.findByIdAndUpdate(id, rest)
+
   res.json({
     ok: true,
     msg: "put api controller",
     id,
+    userUpdated
   });
 };
 
 const postUsers = async (req, res) => {
-  const errors = validationResult(req)
-  if (!errors.isEmpty()) {
-    return res.status(400).json(errors)
-  }
-
-
   const { name, email, password, role } = req.body;
-
   const user = new User({ name, email, password, role });
 
-  //verificar que el correo existe
+  // encriptar la contraseña
 
-  const emailExist = await User.findOne({email})
-
-  if (emailExist) {
-    return res.status(400).json({
-      msg: 'el correo ya existe'
-    })
-  }
-
-  // encriptar la contraseña 
-
-  const slat = bcryptjs.genSaltSync()
-
-  user.password = bcryptjs.hashSync(password, slat)
-
+  const slat = bcryptjs.genSaltSync();
+  user.password = bcryptjs.hashSync(password, slat);
 
   //guardar en db
-
-
   await user.save();
 
   res.json({
     ok: true,
     msg: "post api controller",
-    name,
+    user,
   });
 };
 
