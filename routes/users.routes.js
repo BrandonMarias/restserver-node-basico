@@ -2,6 +2,8 @@ const { Router } = require("express");
 const router = Router();
 const { check } = require("express-validator");
 
+const { validationResult } = require("express-validator");
+
 const  fieldValidation  = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
