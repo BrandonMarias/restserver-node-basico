@@ -17,4 +17,11 @@ const validateEmailExist = async (email = "") => {
   }
 };
 
-module.exports = { validateRole, validateEmailExist };
+const valodateUserId = async (id = "") => {
+  const IdExist = await User.findById(id);
+  if (!IdExist) {
+    throw new Error("el ID no existe");
+  }
+};
+
+module.exports = { validateRole, validateEmailExist, valodateUserId };

@@ -1,22 +1,26 @@
 const bcryptjs = require("bcryptjs");
 const User = require("../models/user");
 
-const getUsers = (req, res) => {
-  const { s, nombre, pag = "1", limit = "10" } = req.query;
+const getUsers = async (req, res) => {
 
-  res.json({
-    ok: true,
-    msg: "get api controller",
-    s,
-    nombre,
-    pag,
-    limit,
-  });
+
+  const {limit = "2", from = '0'} = req.query;
+  const userActive = { estado: true }
+
+
+  const [total, users] = await Promise.all([
+    User.countDocuments(userActive),
+    User.find(userActive)
+      .skip(Number(from))
+      .limit(Number(limit))
+  ])
+  
+  res.json({total, users});
 };
 
 const putUsers = async (req, res) => {
   const { id } = req.params;
-  const { password, google, email, ...rest } = req.body;
+  const { _id, password, google, email, ...rest } = req.body;
 
   if (password) {
     const slat = bcryptjs.genSaltSync();
@@ -25,12 +29,7 @@ const putUsers = async (req, res) => {
 
   const userUpdated = await User.findByIdAndUpdate(id, rest)
 
-  res.json({
-    ok: true,
-    msg: "put api controller",
-    id,
-    userUpdated
-  });
+  res.json(userUpdated);
 };
 
 const postUsers = async (req, res) => {
@@ -59,11 +58,11 @@ const patchUsers = (req, res) => {
   });
 };
 
-const deleteUsers = (req, res) => {
-  res.json({
-    ok: true,
-    msg: "delete api controller",
-  });
+const deleteUsers = async (req, res) => {
+  const {id} = req.params;
+
+  const user = await User.findByIdAndUpdate(id, {estado: false})
+  res.json({user});
 };
 
 module.exports = {

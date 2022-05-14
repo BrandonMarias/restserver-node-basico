@@ -6,6 +6,7 @@ const { fieldValidation } = require("../middlewares/fieldValidation");
 const {
   validateRole,
   validateEmailExist,
+  valodateUserId,
 } = require("../helpers/db-validators");
 
 const {
@@ -18,7 +19,10 @@ const {
 
 router.get("/", getUsers);
 
-router.put("/:id", putUsers);
+router.put("/:id", [
+  check('id', 'ID invalido').isMongoId().custom(valodateUserId),
+  fieldValidation
+], putUsers);
 
 router.post(
   "/",
@@ -33,7 +37,10 @@ router.post(
   postUsers
 );
 
-router.delete("/", deleteUsers);
+router.delete("/:id", [
+  check('id', 'ID invalido').isMongoId().custom(valodateUserId),
+  fieldValidation
+] , deleteUsers);
 
 router.patch("/", patchUsers);
 
