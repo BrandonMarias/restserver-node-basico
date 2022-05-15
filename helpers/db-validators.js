@@ -17,6 +17,16 @@ const validateEmailExist = async (email = "") => {
   }
 };
 
+const validateEmailNoExist = async (email = "") => {
+  const userEmail = await User.findOne({ email });
+
+  if (!userEmail) {
+    throw new Error("El correo no existe");
+  } else if (!userEmail.estado) {
+    throw new Error("Usuario inactivo");
+  }
+};
+
 const valodateUserId = async (id = "") => {
   const IdExist = await User.findById(id);
   if (!IdExist) {
@@ -24,4 +34,9 @@ const valodateUserId = async (id = "") => {
   }
 };
 
-module.exports = { validateRole, validateEmailExist, valodateUserId };
+module.exports = {
+  validateRole,
+  validateEmailExist,
+  valodateUserId,
+  validateEmailNoExist,
+};

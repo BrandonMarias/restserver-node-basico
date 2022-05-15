@@ -2,6 +2,7 @@ const { Router } = require("express");
 const router = Router();
 const { check } = require("express-validator");
 const {reqValidations} = require('../middlewares/reqValidations')
+const {jwtValidation} = require('../middlewares/jwtValidation')
 
 const {
   validateRole,
@@ -38,6 +39,7 @@ router.post(
 );
 
 router.delete("/:id", [
+  jwtValidation,
   check('id', 'ID invalido').isMongoId().custom(valodateUserId),
   reqValidations
 ] , deleteUsers);

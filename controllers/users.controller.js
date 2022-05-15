@@ -60,9 +60,10 @@ const patchUsers = (req, res) => {
 
 const deleteUsers = async (req, res) => {
   const {id} = req.params;
+  const {uid} =  req
 
   const user = await User.findByIdAndUpdate(id, {estado: false})
-  res.json({user});
+  res.json({user, uid});
 };
 
 module.exports = {
