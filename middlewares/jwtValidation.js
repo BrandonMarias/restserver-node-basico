@@ -1,30 +1,42 @@
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
-const jwtValidation = (req, res, next) => {
-    const token = req.header('x-token')
+const jwtValidation = async (req, res, next) => {
+  const token = req.header("x-token");
 
-    if (!token) {
-        return res.status(401).json({
-            msg: 'sin autorización'
-        })
+  if (!token) {
+    return res.status(401).json({
+      msg: "sin autorización",
+    });
+  }
+
+  try {
+    const { uid } = jwt.verify(token, process.env.PRIVATEKEY);
+    const user = await User.findById(uid);
+
+    if (!user) {
+      return res.status(401).json({
+        msg: "usuario no existe en DB",
+      });
     }
 
-    try {
-        
-        const {uid} = jwt.verify(token, process.env.PRIVATEKEY)
-
-        req.uid = uid;
-
-        next()
-    } catch (error) {
-        console.log(error)
-
-        res.status(500).json({
-            msg: 'token no valido'
-        })
+    if (!user.estado) {
+      return res.status(401).json({
+        msg: "Token no valido - usuairo eliminado",
+        user,
+      });
     }
 
-    console.log(token)
-}
+    req.user = user;
 
-module.exports = { jwtValidation}
+    next();
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      msg: "token no valido",
+    });
+  }
+};
+
+module.exports = { jwtValidation };

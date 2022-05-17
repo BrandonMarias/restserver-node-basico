@@ -1,8 +1,12 @@
 const { Router } = require("express");
 const router = Router();
 const { check } = require("express-validator");
-const {reqValidations} = require('../middlewares/reqValidations')
-const {jwtValidation} = require('../middlewares/jwtValidation')
+
+const {
+  jwtValidation,
+  reqValidations,
+  roleValidator,
+} = require("../middlewares");
 
 const {
   validateRole,
@@ -20,10 +24,14 @@ const {
 
 router.get("/", getUsers);
 
-router.put("/:id", [
-  check('id', 'ID invalido').isMongoId().custom(valodateUserId),
-  reqValidations
-], putUsers);
+router.put(
+  "/:id",
+  [
+    check("id", "ID invalido").isMongoId().custom(valodateUserId),
+    reqValidations,
+  ],
+  putUsers
+);
 
 router.post(
   "/",
@@ -38,11 +46,16 @@ router.post(
   postUsers
 );
 
-router.delete("/:id", [
-  jwtValidation,
-  check('id', 'ID invalido').isMongoId().custom(valodateUserId),
-  reqValidations
-] , deleteUsers);
+router.delete(
+  "/:id",
+  [
+    jwtValidation,
+    roleValidator("USER_ROLE"),
+    check("id", "ID invalido").isMongoId().custom(valodateUserId),
+    reqValidations,
+  ],
+  deleteUsers
+);
 
 router.patch("/", patchUsers);
 

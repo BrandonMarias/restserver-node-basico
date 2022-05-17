@@ -1,21 +1,17 @@
 const bcryptjs = require("bcryptjs");
+const { findByIdAndUpdate } = require("../models/user");
 const User = require("../models/user");
 
 const getUsers = async (req, res) => {
-
-
-  const {limit = "2", from = '0'} = req.query;
-  const userActive = { estado: true }
-
+  const { limit = "2", from = "0" } = req.query;
+  const userActive = { estado: true };
 
   const [total, users] = await Promise.all([
     User.countDocuments(userActive),
-    User.find(userActive)
-      .skip(Number(from))
-      .limit(Number(limit))
-  ])
-  
-  res.json({total, users});
+    User.find(userActive).skip(Number(from)).limit(Number(limit)),
+  ]);
+
+  res.json({ total, users });
 };
 
 const putUsers = async (req, res) => {
@@ -27,7 +23,7 @@ const putUsers = async (req, res) => {
     rest.password = bcryptjs.hashSync(password, slat);
   }
 
-  const userUpdated = await User.findByIdAndUpdate(id, rest)
+  const userUpdated = await User.findByIdAndUpdate(id, rest);
 
   res.json(userUpdated);
 };
@@ -59,11 +55,11 @@ const patchUsers = (req, res) => {
 };
 
 const deleteUsers = async (req, res) => {
-  const {id} = req.params;
-  const {uid} =  req
+  const { id } = req.params;
+  const user = await User.findByIdAndUpdate(id, { estado: false });
+  const autenticatedUser = req.user;
 
-  const user = await User.findByIdAndUpdate(id, {estado: false})
-  res.json({user, uid});
+  res.json({ user, autenticatedUser});
 };
 
 module.exports = {

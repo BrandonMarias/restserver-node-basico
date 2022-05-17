@@ -18,7 +18,7 @@ const postAuth = async (req, res) => {
     const token = await jwtGenerator(user.id)
 
     res.json({
-      msg: `Bienvenido ${user.name}`,
+      user,
       token
     });
   } catch (error) {
