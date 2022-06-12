@@ -31,8 +31,6 @@ const jwtValidation = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error);
-
     res.status(500).json({
       msg: "token no valido",
     });

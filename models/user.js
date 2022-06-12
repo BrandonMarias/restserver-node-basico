@@ -26,6 +26,10 @@ const usuarioSchema = Schema({
     type: Boolean,
     default: true,
   },
+  google: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 usuarioSchema.methods.toJSON = function () {

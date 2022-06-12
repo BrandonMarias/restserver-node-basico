@@ -1,6 +1,8 @@
 const bcryptjs = require("bcryptjs");
 const User = require("../models/user");
-const {jwtGenerator} = require('../helpers/jwtGenerator')
+const { jwtGenerator } = require("../helpers/jwtGenerator");
+const { googleVerify } = require("../helpers/google-verify");
+const { response } = require("express");
 
 const postAuth = async (req, res) => {
   const { email, password } = req.body;
@@ -15,11 +17,11 @@ const postAuth = async (req, res) => {
       });
     }
 
-    const token = await jwtGenerator(user.id)
+    const token = await jwtGenerator(user.id);
 
     res.json({
       user,
-      token
+      token,
     });
   } catch (error) {
     console.log(error);
@@ -29,6 +31,48 @@ const postAuth = async (req, res) => {
   }
 };
 
+const googleSingIn = async (req, res = response) => {
+  const { id_token } = req.body;
+
+  try {
+    const { img, name, email } = await googleVerify(id_token);
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      const data = {
+        name,
+        email,
+        img,
+        password: ":p",
+        role: 'USER_ROLE'
+      };
+
+      user = new User(data);
+
+      await user.save();
+    }
+
+    if (!user.estado) {
+      res.status(401).json({
+        msg: "usuario eliminado",
+      });
+    }
+
+    const token = await jwtGenerator(user.id);
+
+    res.json({
+      user,
+      token,
+    });
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({
+      msg: "el token no se pudo verificar",
+    });
+  }
+};
+
 module.exports = {
   postAuth,
+  googleSingIn,
 };
