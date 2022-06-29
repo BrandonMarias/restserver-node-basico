@@ -1,4 +1,3 @@
-
 function handleCredentialResponse(response) {
   // decodeJwtResponse() is a custom function defined by you
   // to decode the credential response.
@@ -14,6 +13,23 @@ function handleCredentialResponse(response) {
     body: JSON.stringify(body),
   })
     .then((resp) => resp.json())
-    .then((resp) => console.log(resp))
+    .then((resp) => {
+      console.log(resp);
+      localStorage.setItem("correoUsuario", resp.user.email);
+    })
     .catch(console.warn());
 }
+
+const singOut = document.getElementById("sing-out");
+singOut.onclick = () => {
+  let correoGuardado = localStorage.getItem("correoUsuario");
+  console.log(correoGuardado)
+  if (correoGuardado) {
+    google.accounts.id.disableAutoSelect();
+    google.accounts.id.revoke(correoGuardado, (done) => {
+    localStorage.removeItem("correoUsuario");
+
+      location.reload();
+    });
+  }
+};
