@@ -5,7 +5,11 @@ function handleCredentialResponse(response) {
 
   const body = { id_token: response.credential };
 
-  fetch("http://localhost:8087/api/auth/google", {
+  let url = (window.location.hostname.includes("localhost"))
+  ? "http://localhost:8087/api/auth/google"
+  : "https://restserver-node-bamd.herokuapp.com/api/auth/google";
+
+  fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
