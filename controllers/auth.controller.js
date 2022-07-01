@@ -12,20 +12,20 @@ const postAuth = async (req, res) => {
     const validPassword = bcryptjs.compareSync(password, user.password);
 
     if (!validPassword) {
-      res.status(400).json({
+      return res.status(400).json({
         msj: "contraseña incorrecta",
       });
     }
 
     const token = await jwtGenerator(user.id);
 
-    res.json({
+    return res.json({
       user,
       token,
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({
+    return res.status(500).json({
       msg: "algo salio mal",
     });
   }
@@ -53,20 +53,20 @@ const googleSingIn = async (req, res = response) => {
     }
 
     if (!user.estado) {
-      res.status(401).json({
+      return res.status(401).json({
         msg: "usuario eliminado",
       });
     }
 
     const token = await jwtGenerator(user.id);
 
-    res.json({
+    return res.json({
       user,
       token,
     });
   } catch (error) {
     console.log(error)
-    res.status(400).json({
+    return res.status(400).json({
       msg: "el token no se pudo verificar",
     });
   }

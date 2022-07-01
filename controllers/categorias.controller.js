@@ -1,5 +1,4 @@
 const { Categoria } = require("../models");
-const { findByIdAndUpdate } = require("../models/categoria");
 
 const crearCategoria = async (req, res) => {
   const nombre = req.body.nombre.toUpperCase();
@@ -23,7 +22,7 @@ const listarCategorias = async (req, res) => {
     Categoria.find(categoriaActiva)
       .skip(Number(from))
       .limit(Number(limit))
-      .populate("user"),
+      .populate("user", ["name", "email"]),
   ]);
 
   return res.json({ total, categorias });
@@ -31,13 +30,7 @@ const listarCategorias = async (req, res) => {
 
 const buscarCategoriaById = async (req, res) => {
   const { id } = req.params;
-  const categoria = await Categoria.findOne({ _id: id, estado: true });
-
-  if (!categoria) {
-    return res.status(400).json({
-      msg: "categoria no encontrada",
-    });
-  }
+  const categoria = await Categoria.findById(id).populate("user", "name");
 
   return res.json({ categoria });
 };
@@ -45,16 +38,11 @@ const buscarCategoriaById = async (req, res) => {
 const actualizarCategotia = async (req, res) => {
   const { id } = req.params;
   const nombre = req.body.nombre.toUpperCase();
-  const categoria = await Categoria.findOneAndUpdate(
-    { _id: id, estado: true },
-    { nombre }
+  const categoria = await Categoria.findByIdAndUpdate(
+    id,
+    { nombre },
+    { new: true }
   );
-
-  if (!categoria) {
-    return res.status(400).json({
-      msg: "categoria no encontrada",
-    });
-  }
 
   return res.json({ categoria });
 };
@@ -62,13 +50,11 @@ const actualizarCategotia = async (req, res) => {
 const eliminarCategoria = async (req, res) => {
   const { id } = req.params;
 
-  const categoria = await Categoria.findByIdAndUpdate(id, { estado: false });
-
-  if (!categoria) {
-    return res.status(400).json({
-      msg: "categoria no encontrada",
-    });
-  }
+  const categoria = await Categoria.findByIdAndUpdate(
+    id,
+    { estado: false },
+    { new: true }
+  );
 
   return res.json({ categoria });
 };

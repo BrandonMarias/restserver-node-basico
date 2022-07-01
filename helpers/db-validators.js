@@ -1,4 +1,4 @@
-const {Categoria, Role, Users} = require("../models");
+const { Categoria, Role, Users, Producto } = require("../models");
 
 const validateRole = async (role = "") => {
   const roleExist = await Role.findOne({ role });
@@ -33,31 +33,48 @@ const validateUserId = async (id = "") => {
   }
 };
 
-const validateCategoriaExist = async(nombre = "") => {
-  nombre = nombre.toUpperCase();
-  const categoriaDB = await Categoria.findOne({nombre})
-
-  if (!categoriaDB) {
-    throw new Error("categoria no existe")
+const validateCategoriaById = async (id = "") => {
+  if (!id) {
+    return;
   }
+  const IdExist = await Categoria.findOne({ _id: id, estado: true });
+  if (!IdExist) {
+    throw new Error("la categoria no existe");
+  }
+};
 
-}
+const validateProductoById = async (id = "") => {
+  const IdExist = await Producto.findOne({ _id: id, estado: true });
+  if (!IdExist) {
+    throw new Error("el producto no existe");
+  }
+};
 
-const validateCategoriaNotExist = async(nombre = "") => {
+const validateCategoriaNotExist = async (nombre = "") => {
   nombre = nombre.toUpperCase();
-  const categoriaDB = await Categoria.findOne({nombre})
+  const categoriaDB = await Categoria.findOne({ nombre });
 
   if (categoriaDB) {
-    throw new Error("categoria ya existe")
+    throw new Error("categoria ya existe");
   }
+};
 
-}
+const validateProductoNotExist = async (nombre = "") => {
+  nombre = nombre.toUpperCase();
+  const producto = await Producto.findOne({ nombre });
+
+  if (producto) {
+    throw new Error("categoria ya existe");
+  }
+};
 
 module.exports = {
   validateRole,
   validateUserId,
   validateEmailExist,
   validateEmailNoExist,
-  validateCategoriaExist,
-  validateCategoriaNotExist
+  validateProductoById,
+  validateCategoriaById,
+  validateCategoriaNotExist,
+  validateProductoNotExist,
 };

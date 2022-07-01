@@ -1,5 +1,4 @@
 const bcryptjs = require("bcryptjs");
-const { findByIdAndUpdate } = require("../models/user");
 const User = require("../models/user");
 
 const getUsers = async (req, res) => {
@@ -18,12 +17,20 @@ const putUsers = async (req, res) => {
   const { id } = req.params;
   const { _id, password, google, email, ...rest } = req.body;
 
+  //garantizar que el usuario sea el mismo que se va a modificar
+  if (id == req.user._id && req.roleConfirmation) {
+    return res.status(401).json({
+      msg: "no es el mismo usuario o administrador",
+      id,
+      uid: req.user._id,
+    });
+  }
   if (password) {
     const slat = bcryptjs.genSaltSync();
     rest.password = bcryptjs.hashSync(password, slat);
   }
 
-  const userUpdated = await User.findByIdAndUpdate(id, rest);
+  const userUpdated = await User.findByIdAndUpdate(id, rest, { new: true });
 
   res.json(userUpdated);
 };
@@ -59,7 +66,7 @@ const deleteUsers = async (req, res) => {
   const user = await User.findByIdAndUpdate(id, { estado: false });
   const autenticatedUser = req.user;
 
-  res.json({ user, autenticatedUser});
+  res.json({ user, autenticatedUser });
 };
 
 module.exports = {

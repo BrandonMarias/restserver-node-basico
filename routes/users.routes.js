@@ -6,6 +6,7 @@ const {
   jwtValidation,
   reqValidations,
   roleValidator,
+  roleConfirmation
 } = require("../middlewares");
 
 const {
@@ -27,6 +28,8 @@ router.get("/", getUsers);
 router.put(
   "/:id",
   [
+    jwtValidation,
+    roleConfirmation("ADMIN_ROLE"),
     check("id", "ID invalido").isMongoId().custom(validateUserId),
     reqValidations,
   ],

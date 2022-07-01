@@ -18,8 +18,8 @@ const {
 } = require("../controllers/categorias.controller");
 
 const {
-  validateCategoriaExist,
   validateCategoriaNotExist,
+  validateCategoriaById
 } = require("../helpers/db-validators");
 
 //obtener todas las cateorias
@@ -28,7 +28,7 @@ router.get("/", listarCategorias);
 //obtener una categoria por id
 router.get(
   "/:id",
-  [check("id", "id de categoria no valido").isMongoId(), reqValidations],
+  [check("id", "id de categoria no valido").isMongoId().custom(validateCategoriaById), reqValidations],
   buscarCategoriaById
 );
 
@@ -49,7 +49,7 @@ router.post(
 router.put(
   "/:id",
   [
-    check("id", "id de categoria no valido").isMongoId(),
+    check("id", "id de categoria no valido").isMongoId().custom(validateCategoriaById),
     check("nombre", "el nombre es obligatorio")
       .notEmpty()
       .custom(validateCategoriaNotExist),
@@ -61,7 +61,7 @@ router.put(
 );
 
 //eliminar categoria por ID Admin
-router.delete("/:id", [check("id", "id de categoria no valido").isMongoId(),
+router.delete("/:id", [check("id", "id de categoria no valido").isMongoId().custom(validateCategoriaById),
   reqValidations,
   jwtValidation,
   roleValidator("ADMIN_ROLE")],
