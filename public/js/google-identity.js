@@ -5,6 +5,7 @@ function handleCredentialResponse(response) {
 
   const body = { id_token: response.credential };
 
+  console.log(window.location.hostname.includes("localhost"))
   let url = (window.location.hostname.includes("localhost"))
   ? "http://localhost:8087/api/auth/google"
   : "https://restserver-node-bamd.herokuapp.com/api/auth/google";

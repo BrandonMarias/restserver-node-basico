@@ -10,7 +10,7 @@ const roleValidator = (...roles) => {
         const {role} = req.user;
         if (!roles.includes(role)) {
             return res.status(401).json({
-                msg: 'error de autorización'
+                msg: 'error de autorización (role)'
             })
         }
 
