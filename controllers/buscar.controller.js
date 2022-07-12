@@ -1,6 +1,11 @@
 const { Users, Categoria, Producto } = require("../models");
 const { ObjectId } = require("mongoose").Types;
-const coleccionesPermitidas = ["user", "categoria", "producto", "productoByCategoria"];
+const coleccionesPermitidas = [
+  "user",
+  "producto",
+  "categoria",
+  "productoByCategoria",
+];
 
 const buscarUsers = async (termino = "", res) => {
   const esMongoId = ObjectId.isValid(termino);
@@ -50,29 +55,29 @@ const buscarProductos = async (termino = "", res) => {
 };
 
 const buscarProductosByCategoria = async (termino = "", res) => {
-    const esMongoId = ObjectId.isValid(termino);
-  
-    if (esMongoId) {
-      const producto = await Producto.findOne({categoria: ObjectId(termino)})
-      return res.json({ results: producto ? [producto] : [] });
-    }
-    const regex = new RegExp(termino, "i");
-  
-    const categorias = await Categoria.find({ nombre: regex, estado: true });
+  const esMongoId = ObjectId.isValid(termino);
 
-    const categoriasEncontradas = categorias.map((categoria) => {
-        return {
-            categoria: categoria._id
-        }
-    })
+  if (esMongoId) {
+    const producto = await Producto.findOne({ categoria: ObjectId(termino) });
+    return res.json({ results: producto ? [producto] : [] });
+  }
+  const regex = new RegExp(termino, "i");
 
-    const productos = await Producto.find({
-        $or: categoriasEncontradas,
-        $and: [{ estado: true }],
-      }).populate("categoria", "nombre");
-      
-      return res.json({results: productos})
-  };
+  const categorias = await Categoria.find({ nombre: regex, estado: true });
+
+  const categoriasEncontradas = categorias.map((categoria) => {
+    return {
+      categoria: categoria._id,
+    };
+  });
+
+  const productos = await Producto.find({
+    $or: categoriasEncontradas,
+    $and: [{ estado: true }],
+  }).populate("categoria", "nombre");
+
+  return res.json({ results: productos });
+};
 
 const buscar = (req, res) => {
   const { coleccion, termino } = req.params;
@@ -93,8 +98,8 @@ const buscar = (req, res) => {
     case "producto":
       buscarProductos(termino, res);
       break;
-      case "productoByCategoria":
-      buscarProductosByCategoria(termino,res)
+    case "productoByCategoria":
+      buscarProductosByCategoria(termino, res);
       break;
 
     default:
