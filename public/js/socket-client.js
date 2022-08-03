@@ -50,7 +50,7 @@ const crearMensajes = (mensajes = []) => {
 
     let mensajesHtml = "";
 
-    mensajes.forEach(({ nombre, mensaje }) => {
+    mensajes.reverse().forEach(({ nombre, mensaje }) => {
         mensajesHtml += `
         <div class="card mb-2">
             <div class="card-body">
