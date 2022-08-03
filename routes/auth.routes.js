@@ -3,8 +3,8 @@ const router = Router();
 
 const { check } = require("express-validator");
 
-const { postAuth, googleSingIn } = require("../controllers/auth.controller");
-const { reqValidations } = require("../middlewares/reqValidations");
+const { postAuth, googleSingIn, renovarToken } = require("../controllers/auth.controller");
+const { reqValidations, jwtValidation } = require("../middlewares");
 const { validateEmailNoExist } = require("../helpers/db-validators");
 
 router.post(
@@ -25,5 +25,7 @@ router.post(
   ],
   googleSingIn
 );
+
+router.get("/", [jwtValidation], renovarToken)
 
 module.exports = router;

@@ -6,23 +6,42 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GOOGLE SING-IN</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
 </head>
 
 <body>
-    <h1>GOOGLE SING-IN</h1>
-    <hr>
-    <div id="g_id_onload" data-client_id="644379127067-hb68iqlaqdaveaih4g0mc61dk1oqargp.apps.googleusercontent.com"
-        data-callback="handleCredentialResponse" data-auto_prompt="false">
-    </div>
-    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with"
-        data-shape="rectangular" data-logo_alignment="left">
-    </div>
-    <hr>
-    <a href="/seccion">ir a la seccion</a>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>GOOGLE SING-IN</h1>
+                <hr>
+                <div id="g_id_onload"
+                    data-client_id="644379127067-hb68iqlaqdaveaih4g0mc61dk1oqargp.apps.googleusercontent.com"
+                    data-callback="handleCredentialResponse" data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline"
+                    data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left">
+                </div>
+                <hr>
 
-    <button id="sing-out">
-        sing out
-    </button>
+                <button id="sing-out" class="btn btn-secondary">
+                    sing out
+                </button>
+
+            </div>
+            <div class="col-sm-6">
+                <h1 class="text-center">Login manual</h1>
+                <hr>
+                <form class="d-grid" id="formulario">
+                    <input type="email" name="correo" class="form-control mb-2" placeholder="Correo" id="correo">
+                    <input type="password" name="contraseña" id="contraseña" class="form-control mb-2" placeholder="Contraseña">
+                    <button class="btn btn-primary" type="submit">Entrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="js/google-identity.js"></script>
 </body>

@@ -72,7 +72,17 @@ const googleSingIn = async (req, res = response) => {
   }
 };
 
+const renovarToken = async(req, res) => {
+const {user} = req;
+
+  const token = await jwtGenerator(user.id);
+
+
+return res.json({user, token})
+}
+
 module.exports = {
   postAuth,
   googleSingIn,
+  renovarToken
 };
