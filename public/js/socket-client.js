@@ -10,7 +10,7 @@ let socket = null;
 
 let url = window.location.hostname.includes("localhost")
     ? "http://localhost:8087/api/auth/"
-    : "https://chat-bamd.herokuapp.com//api/auth/";
+    : "https://chat-bamd.herokuapp.com/api/auth/";
 
 const validarJWT = async (url) => {
     let user = null;
