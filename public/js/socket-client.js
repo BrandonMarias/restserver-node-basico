@@ -104,7 +104,7 @@ const conectarSocket = async () => {
     socket.on("recibir-mensaje", crearMensajes);
     socket.on("mensaje-privado", ({de,mensaje}) => {
         
-        mensajesPrivados.innerHTML = `
+        mensajesPrivados.innerHTML += `
         <div class="card mb-2">
             <div class="card-body">
             <p><span class="text-warning">${de}: </span>${mensaje}</p>
